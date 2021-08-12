@@ -5,7 +5,6 @@ import io
 import os
 from .placeholder import PlaceHolder
 
-
 class MoreIOError(IOError):
     pass
 
@@ -34,12 +33,12 @@ class More:
             initial_value=output,
             newline="\n"
         )
-        self._buffer_lines = self._buffer.getvalue().splitlines()
+        self._buffer_lines = _buffer.getvalue().splitlines()
         self._oldattr = termios.tcgetattr(sys.stdin.fileno())
     
     @property
     def placeholder(self):
-        return self._placeholder
+        return self._paceholder
 
     @placeholder.setter
     def placeholder(self, value):
@@ -102,12 +101,12 @@ class More:
                         self.placeholder.after_blank,
                     )
 
-                if (len(_scrlines)-len(_scrlines[now_line+total_line:])) < (lines-_placeline):
-                    return
+                if (len(_scrlines)-len(_scrlines[now_line+total_line:])) < _totallines:
+                    sys.exit(0)
                 _input = sys.stdin.read(1)
                 if ord(_input) == 0x71:
                     # quit
-                    return
+                    sys.exit(0)
                 elif ord(_input) == 0x20:
                     # space
                     now_line += total_line
