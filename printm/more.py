@@ -43,7 +43,7 @@ class More:
 
     @placeholder.setter
     def placeholder(self, value):
-        if type(value) is not PlaceHolder.__class__ and \
+        if type(value) is not PlaceHolder and \
                 value is not None:
             raise TypeError(
                 "placeholder must be PlaceHolder class."
@@ -83,26 +83,27 @@ class More:
                         _scrlines.append(line)
 
                 if self.placeholder is not None:
-                    _placeline = \
-                        self.placeholder.placelines(
+                    _aboveplace = \
+                        self.placeholder.above_placelines(
                             lines=lines
                         )
                 else:
-                    _placeline = 0
+                    _aboveplace = lines
                 total_line = 0
                 for line in _scrlines:
                     print(line)
                     total_line += 1
-                    if total_line == (lines-_placeline):
+                    if total_line == _aboveplace:
                         break
-                if self.placeholder is not None:
+                if self.placeholder is not None and \
+                    total_line == _aboveplace:
                     print(
                         self.placeholder.before_blank,
                         self.placeholder.placeholder,
                         self.placeholder.after_blank,
                     )
 
-                if (len(_scrlines)-len(_scrlines[now_line+total_line:])) < (lines-_placeline):
+                if (len(_scrlines)-len(_scrlines[now_line+total_line:])) < _aboveplace:
                     return
                 _input = sys.stdin.read(1)
                 if ord(_input) == 0x71:
