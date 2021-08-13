@@ -1,5 +1,5 @@
 __pycache__
 .*.swp
 .*.swo
-dist
-*.egg-info
+/dist/
+*.egg-info/
