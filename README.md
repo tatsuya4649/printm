@@ -2,7 +2,7 @@
 
 printm is an open-source Python package providing CUI output like more/less command in Python script.
 
-![](https://raw.githubusercontent.com/tatsuya4649/printm/release/0.1.0/docs/assets/printm.gif)
+![](https://raw.githubusercontent.com/tatsuya4649/printm/master/docs/assets/printm.gif)
 
 ## Feature
 
