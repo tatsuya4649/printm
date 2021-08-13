@@ -5,6 +5,7 @@ import io
 import os
 from .placeholder import PlaceHolder
 
+
 class MoreIOError(IOError):
     pass
 
@@ -29,20 +30,20 @@ class More:
                 "stdout must be tty."
             )
 
-        _buffer = io.StringIO(
+        self._buffer = io.StringIO(
             initial_value=output,
             newline="\n"
         )
-        _buffer_lines = _buffer.getvalue().splitlines()
-        _oldattr = termios.tcgetattr(sys.stdin.fileno())
+        self._buffer_lines = self._buffer.getvalue().splitlines()
+        self._oldattr = termios.tcgetattr(sys.stdin.fileno())
     
     @property
     def placeholder(self):
-        return self._paceholder
+        return self._placeholder
 
     @placeholder.setter
     def placeholder(self, value):
-        if type(value) is not PlaceHolder.__class__ and \
+        if type(value) is not PlaceHolder and \
                 value is not None:
             raise TypeError(
                 "placeholder must be PlaceHolder class."
@@ -68,12 +69,13 @@ class More:
     def print(self):
         self._setcbreak()
         now_line = 0
+        buffer_lines = self._buffer_lines
         try:
             while True:
                 self._flush_screen()
                 columns, lines = self._terminal_size()
                 _scrlines = list()
-                for line in file_lines[now_line:]:
+                for line in buffer_lines[now_line:]:
                     if len(line) > columns:
                         _scrlines.append(line[:columns])
                         _scrlines.append(line[columns:])
@@ -81,27 +83,32 @@ class More:
                         _scrlines.append(line)
 
                 if self.placeholder is not None:
-                    _placeline = \
-                        self.placeholder.placelines(
+                    _aboveplace = \
+                        self.placeholder.above_placelines(
                             lines=lines
                         )
                 else:
-                    _placeline = 0
+                    _aboveplace = lines
                 total_line = 0
                 for line in _scrlines:
                     print(line)
                     total_line += 1
-                    if total_line == (lines-_placeline):
+                    if total_line == _aboveplace:
                         break
-                for _ in range(_BLANK_LINES):   print("")
-                print(_PLACE_HOLDER)
+                if self.placeholder is not None and \
+                    total_line == _aboveplace:
+                    print(
+                        self.placeholder.before_blank,
+                        self.placeholder.placeholder,
+                        self.placeholder.after_blank,
+                    )
 
-                if (len(_scrlines)-len(_scrlines[now_line+total_line:])) < _totallines:
-                    sys.exit(0)
+                if (len(_scrlines)-len(_scrlines[now_line+total_line:])) < _aboveplace:
+                    return
                 _input = sys.stdin.read(1)
                 if ord(_input) == 0x71:
                     # quit
-                    sys.exit(0)
+                    return
                 elif ord(_input) == 0x20:
                     # space
                     now_line += total_line

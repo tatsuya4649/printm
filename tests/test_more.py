@@ -2,14 +2,26 @@ import pytest
 from unittest import mock
 import sys
 import io
+import os
 from printm.more import *
 
 
 @pytest.fixture(scope="function", autouse=False)
 def more_init():
-    more = More(
-        output="hello world",
-    )
+    with open(
+        os.path.join(
+            os.path.dirname(
+                os.path.abspath(
+                    __file__
+                )
+            ),
+            "test_data/test.txt"
+        ),
+        "r"
+    ) as f:
+        more = More(
+            output=f.read(),
+        )
     yield more
     
 def test_init():
@@ -67,3 +79,5 @@ def test_placeholder_type_error(more_init, placeholder):
     ):
         more_init.placeholder = placeholder
         
+def test_print(more_init):
+    more_init.print()

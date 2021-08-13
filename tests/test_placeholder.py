@@ -89,7 +89,7 @@ def test_placelines(p_init, lines):
     with pytest.raises(
         TypeError
     ):
-        result = p_init.placelines(
+        result = p_init.above_placelines(
             lines=lines,
         )
 
