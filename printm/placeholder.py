@@ -16,7 +16,7 @@ class PlaceHolder:
     """
     def __init__(
         self,
-        placeholder,
+        placeholder=None,
         before_blanks=1,
         after_blanks=1,
     ):
@@ -27,7 +27,7 @@ class PlaceHolder:
         self.before_blanks = before_blanks
         self.after_blanks = after_blanks
 
-    def placelines(self, lines):
+    def above_placelines(self, lines):
         if not isinstance(lines, int):
             TypeError(
                 "lines must be int type."
@@ -37,11 +37,14 @@ class PlaceHolder:
 
     @property
     def placeholder(self):
+        if self._placeholder is None:
+            return ""
         return self._placeholder
 
     @placeholder.setter
     def placeholder(self, value):
-        if not isinstance(value, str):
+        if value is not None and \
+                not isinstance(value, str):
             raise TypeError(
                 "placeholder must be str type."
             )
